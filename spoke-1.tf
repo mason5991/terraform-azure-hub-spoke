@@ -61,6 +61,7 @@ resource "azurerm_subnet" "spoke1-workload" {
     }
 }
 
+// Network peering - spoke1 to hub
 resource "azurerm_virtual_network_peering" "spoke1-hub-peer" {
     name                      = "spoke1-hub-peer"
     resource_group_name       = azurerm_resource_group.spoke1-vnet-rg.name
@@ -87,9 +88,9 @@ resource "azurerm_network_interface" "spoke1-nic" {
     enable_ip_forwarding = true
 
     ip_configuration {
-    name                          = local.prefix-spoke1
-    subnet_id                     = azurerm_subnet.spoke1-mgmt.id
-    private_ip_address_allocation = "Dynamic"
+        name                          = local.prefix-spoke1
+        subnet_id                     = azurerm_subnet.spoke1-mgmt.id
+        private_ip_address_allocation = "Dynamic"
     }
     
     timeouts {
@@ -142,6 +143,7 @@ resource "azurerm_virtual_machine" "spoke1-vm" {
     }
 }
 
+// Network peering - hub to spoke1
 resource "azurerm_virtual_network_peering" "hub-spoke1-peer" {
     name                      = "hub-spoke1-peer"
     resource_group_name       = azurerm_resource_group.hub-vnet-rg.name

@@ -61,6 +61,7 @@ resource "azurerm_subnet" "spoke2-workload" {
     }
 }
 
+// Network peering - spoke2 to hub
 resource "azurerm_virtual_network_peering" "spoke2-hub-peer" {
     name                      = "${local.prefix-spoke2}-hub-peer"
     resource_group_name       = azurerm_resource_group.spoke2-vnet-rg.name
@@ -146,6 +147,7 @@ resource "azurerm_virtual_machine" "spoke2-vm" {
     }
 }
 
+// Network peering - hub to spoke2
 resource "azurerm_virtual_network_peering" "hub-spoke2-peer" {
     name                      = "hub-spoke2-peer"
     resource_group_name       = azurerm_resource_group.hub-vnet-rg.name

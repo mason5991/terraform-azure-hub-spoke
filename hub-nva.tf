@@ -43,6 +43,7 @@ resource "azurerm_network_interface" "hub-nva-nic" {
     }
 }
 
+# Virtual Machine
 resource "azurerm_virtual_machine" "hub-nva-vm" {
     name                  = "${local.prefix-hub-nva}-vm"
     location              = azurerm_resource_group.hub-nva-rg.location

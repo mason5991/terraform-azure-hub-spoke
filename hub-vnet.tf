@@ -141,7 +141,7 @@ resource "azurerm_virtual_machine" "hub-vm" {
     }
 }
 
-# Virtual Network Gateway
+# Public IP for Virtual Network Gateway
 resource "azurerm_public_ip" "hub-vpn-gateway1-pip" {
     name                = "hub-vpn-gateway1-pip"
     location            = azurerm_resource_group.hub-vnet-rg.location
@@ -156,6 +156,7 @@ resource "azurerm_public_ip" "hub-vpn-gateway1-pip" {
     }
 }
 
+# Virtual Network Gateway
 resource "azurerm_virtual_network_gateway" "hub-vnet-gateway" {
     name                = "hub-vpn-gateway1"
     location            = azurerm_resource_group.hub-vnet-rg.location
@@ -183,6 +184,7 @@ resource "azurerm_virtual_network_gateway" "hub-vnet-gateway" {
     }
 }
 
+# Connection - hub gateway to onprem gateway
 resource "azurerm_virtual_network_gateway_connection" "hub-onprem-conn" {
     name                = "hub-onprem-conn"
     location            = azurerm_resource_group.hub-vnet-rg.location
@@ -203,6 +205,7 @@ resource "azurerm_virtual_network_gateway_connection" "hub-onprem-conn" {
     }
 }
 
+# Connection - onprem gateway to hub gateway
 resource "azurerm_virtual_network_gateway_connection" "onprem-hub-conn" {
     name                = "onprem-hub-conn"
     location            = azurerm_resource_group.onprem-vnet-rg.location
