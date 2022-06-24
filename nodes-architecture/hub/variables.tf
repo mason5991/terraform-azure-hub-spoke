@@ -1,12 +1,33 @@
 variable "hub_name" {
   description = "Hub name"
-  default = "hub"
 }
 
 variable "location" {
     description = "Location of the network"
     default     = "eastus"
 }
+
+variable "vnet_address_space" {
+  type = list(string)
+}
+
+variable "gateway_subnet_address_prefixes" {
+  type = list(string)
+}
+
+variable "firewall_subnet_address_prefixes" {
+  type = list(string)
+}
+
+variable "bastion_subnet_address_prefixes" {
+  type = list(string)
+}
+
+variable "mgmt_subnet_address_prefixes" {
+  type = list(string)
+}
+
+variable "shared_key" {}
 
 variable "vm_username" {
     description = "Username for Virtual Machines"
@@ -21,13 +42,6 @@ variable "vm_password" {
 variable "vm_size" {
     description = "Size of the VMs"
     default     = "Standard_DS1_v2"
-}
-
-variable "shared_key" {}
-
-variable "application_gateway_name" {
-  description = "Application gateway name"
-  default = "${hub_name}-gateway"
 }
 
 locals {

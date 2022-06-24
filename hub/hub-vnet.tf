@@ -38,6 +38,8 @@ resource "azurerm_subnet" "hub_mgmt" {
     enforce_private_link_endpoint_network_policies = true
 }
 
+// DMZ (demilitarized zone)
+// https://aviatrix.com/learn-center/cloud-security/azure-network-virtual-appliance/#:~:text=Azure%20network%20virtual%20appliance%20is,(DMZ)%20in%20the%20cloud.
 resource "azurerm_subnet" "hub_dmz" {
     name                 = "${local.hub_prefix}-dmz"
     resource_group_name  = azurerm_resource_group.hub_vnet_rg.name
