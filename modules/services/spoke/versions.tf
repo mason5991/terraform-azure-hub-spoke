@@ -14,10 +14,6 @@ terraform {
   }
 }
 
-provider "tls" {
-  # Configuration options
-}
-
 provider "azurerm" {
   features {
     virtual_machine {

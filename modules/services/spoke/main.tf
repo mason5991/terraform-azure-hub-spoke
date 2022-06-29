@@ -1,5 +1,5 @@
 locals {
-    spoke_location       = var.location
+    spoke_location       = var.spoke_location
     spoke_resource_group = "${var.spoke_name}-vnet-rg"
     spoke_prefix         = "${var.spoke_name}"
 }
@@ -20,25 +20,25 @@ resource "azurerm_virtual_network" "spoke_vnet" {
     tags = local.tags
 }
 
-resource "azurerm_subnet" "spoke_subnet" {
-    name                 = "${local.spoke_prefix}-subnet"
+resource "azurerm_subnet" "spoke_workload_subnet" {
+    name                 = "${local.spoke_prefix}-workload-subnet"
     resource_group_name  = azurerm_resource_group.spoke_vnet_rg.name
     virtual_network_name = azurerm_virtual_network.spoke_vnet.name
-    address_prefixes     = var.address_prefixes
+    address_prefixes     = var.workload_address_prefixes
 
     // Must include (https://github.com/hashicorp/terraform-provider-azurerm/issues/2977#issuecomment-1011183736)
     enforce_private_link_endpoint_network_policies = true
 }
 
-resource "azurerm_network_interface" "spoke_nic" {
+resource "azurerm_network_interface" "spoke_workload_nic" {
     name                 = "${local.spoke_prefix}-nic"
     location             = azurerm_resource_group.spoke_vnet_rg.location
     resource_group_name  = azurerm_resource_group.spoke_vnet_rg.name
     enable_ip_forwarding = true
 
     ip_configuration {
-        name                          = "${local.spoke_prefix}-subnet-ip-conf"
-        subnet_id                     = azurerm_subnet.spoke_subnet.id
+        name                          = "${local.spoke_prefix}-workload-subnet-ip-conf"
+        subnet_id                     = azurerm_subnet.spoke_workload_subnet.id
         private_ip_address_allocation = "Dynamic"
     }
     
@@ -46,31 +46,31 @@ resource "azurerm_network_interface" "spoke_nic" {
 }
 
 # Key for VM
-resource "tls_private_key" "spoke_vm_ssh" {
+resource "tls_private_key" "spoke_workload_vm_ssh" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 # Virtual machine
-resource "azurerm_virtual_machine" "spoke_vm" {
-    name                  = "${local.spoke_prefix}-vm"
+resource "azurerm_virtual_machine" "spoke_workload_vm" {
+    name                  = var.vm_name != "" ? var.vm_name : "${local.spoke_prefix}-vm"
     location              = azurerm_resource_group.spoke_vnet_rg.location
     resource_group_name   = azurerm_resource_group.spoke_vnet_rg.name
-    network_interface_ids = [azurerm_network_interface.spoke_nic.id]
+    network_interface_ids = [azurerm_network_interface.spoke_workload_nic.id]
     vm_size               = var.vm_size
 
     storage_image_reference {
-        publisher = "Canonical"
-        offer     = "UbuntuServer"
-        sku       = "16.04-LTS"
-        version   = "latest"
+        publisher = var.vm_publisher
+        offer     = var.vm_offer
+        sku       = var.vm_sku
+        version   = var.vm_version
     }
 
     storage_os_disk {
-        name              = "${local.spoke_prefix}-vm-osdisk-1"
-        caching           = "ReadWrite"
-        create_option     = "FromImage"
-        managed_disk_type = "Standard_LRS"
+        name              = var.vm_disk_name != "" ? var.vm_disk_name : "${local.spoke_prefix}-osdisk-1"
+        caching           = var.vm_disk_caching
+        create_option     = var.vm_create_option
+        managed_disk_type = var.vm_managed_disk_type
     }
 
     os_profile {
@@ -81,15 +81,15 @@ resource "azurerm_virtual_machine" "spoke_vm" {
     os_profile_linux_config {
         disable_password_authentication = true
         ssh_keys {
-            key_data = tls_private_key.spoke_vm_ssh.public_key_openssh
+            key_data = tls_private_key.spoke_workload_vm_ssh.public_key_openssh
             path = "/home/${var.vm_username}/.ssh/authorized_keys"
         } 
     }
 
     timeouts {
-        create = "2h"
-        update = "2h"
-        delete = "2h"
+        create = "1h"
+        update = "1h"
+        delete = "1h"
     }
 
     tags = local.tags

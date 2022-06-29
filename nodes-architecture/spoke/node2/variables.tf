@@ -1,4 +1,4 @@
-variable "location" {
+variable "spoke_location" {
   description = "Location of the network"
   default     = "eastus"
 }
@@ -30,21 +30,33 @@ variable "vm_username" {
 
 variable "vm_size" {
   description = "Size of the VMs"
-  default     = "Standard_DS1_v2"
+  default     = "Standard_D2s_v3"
+}
+
+variable "vm_publisher" {
+  default = "Canonical"
+}
+
+variable "vm_offer" {
+  default = "UbuntuServer"
+}
+
+variable "vm_sku" {
+  default = "18.04-LTS"
+} 
+
+variable "vm_version" {
+  default = "latest"
 }
 
 variable "vnet_address_space" {
-  description   = "Spoke virutal netwoork address space setting"
+  description = "Spoke virutal network address space setting"
 }
 
-variable "address_prefixes" {
-  description = "Address prefixes"
+variable "workload_address_prefixes" {
+  description = "Workload address prefixes"
 }
 
-locals {
-  tags = {
-    Terraform   = "true"
-    Environment = var.spoke_name
-    Type        = "spoke"
-  }
+variable "tags" {
+  default = {}
 }
