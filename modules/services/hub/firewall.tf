@@ -46,7 +46,7 @@ resource "azurerm_firewall_network_rule_collection" "hub_firewall_nrc_dns" {
   name = "${local.hub_prefix}-firewall-nrc-dns"
   azure_firewall_name = azurerm_firewall.hub_firewall.name
   resource_group_name = azurerm_resource_group.hub_vnet_rg.name
-  priority = 100
+  priority = 500
   action = "Allow"
 
   rule {
@@ -59,11 +59,11 @@ resource "azurerm_firewall_network_rule_collection" "hub_firewall_nrc_dns" {
 }
 
 # Hub firewall network rules for web access
-resource "azurerm_firewall_network_rule_collection" "hub_firewall_nrc_web" {
-  name = "${local.hub_prefix}-firewall-nrc-web"
+resource "azurerm_firewall_network_rule_collection" "hub_firewall_nrc" {
+  name = "${local.hub_prefix}-firewall-nrc"
   azure_firewall_name = azurerm_firewall.hub_firewall.name
   resource_group_name = azurerm_resource_group.hub_vnet_rg.name
-  priority = 101
+  priority = 600
   action = "Allow"
   rule {
     name = "HTTP"
@@ -76,13 +76,6 @@ resource "azurerm_firewall_network_rule_collection" "hub_firewall_nrc_web" {
     name = "HTTPS"
     source_addresses = ["10.0.0.0/16"]
     destination_ports = ["443"]
-    destination_addresses = ["*"]
-    protocols = ["TCP"]
-  }
-  rule {
-    name = "Tendermint RPC"
-    source_addresses = ["10.0.0.0/16"]
-    destination_ports = ["26657"]
     destination_addresses = ["*"]
     protocols = ["TCP"]
   }

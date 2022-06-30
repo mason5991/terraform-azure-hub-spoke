@@ -43,10 +43,22 @@ variable "vm_offer" {
 
 variable "vm_sku" {
   default = "18.04-LTS"
-} 
+}
 
 variable "vm_version" {
   default = "latest"
+}
+
+variable "vm_create_option" {
+  default = "FromImage"
+}
+
+variable "vm_managed_disk_type" {
+  default = "StandardSSD_LRS"
+}
+
+variable "vm_disk_size_gb" {
+  default = 1024
 }
 
 variable "vnet_address_space" {

@@ -22,6 +22,10 @@ output "hub_bastion_pip_id" {
   value = azurerm_public_ip.hub_bastion_pip.id
 }
 
+output "hub_bastion_public_ip_address" {
+  value = azurerm_public_ip.hub_bastion_pip.ip_address
+}
+
 
 #############################
 ##    Firewall - Output    ##
@@ -33,6 +37,14 @@ output "hub_firewall_subnet_id" {
 
 output "hub_firewall" {
   value = azurerm_firewall.hub_firewall
+}
+
+output "hub_firewall_pip_id" {
+  value = azurerm_public_ip.hub_firewall_pip.id
+}
+
+output "hub_firewall_public_ip_address" {
+  value = azurerm_public_ip.hub_firewall_pip.ip_address
 }
 
 #############################
@@ -55,9 +67,21 @@ output "hub_vpn_gateway" {
   value = azurerm_virtual_network_gateway.hub_vpn_gateway
 }
 
-#############################
-##   Hub VM SSH - Output   ##
-#############################
+output "hub_vpn_gateway_pip_id" {
+  value = azurerm_public_ip.hub_vpn_gateway_pip.id
+}
+
+output "hub_vpn_gateway_public_ip_address" {
+  value = azurerm_public_ip.hub_vpn_gateway_pip.ip_address
+}
+
+##################################
+##       mgmt VM - Output       ##
+##################################
+
+output "hub_mgmt_vm_name" {
+  value = azurerm_virtual_machine.hub_mgmt_vm.name
+}
 
 output "hub_mgmt_vm_tls_public_key" {
   value = tls_private_key.hub_vm_ssh.public_key_pem

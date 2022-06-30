@@ -67,10 +67,11 @@ resource "azurerm_virtual_machine" "spoke_workload_vm" {
     }
 
     storage_os_disk {
-        name              = var.vm_disk_name != "" ? var.vm_disk_name : "${local.spoke_prefix}-osdisk-1"
+        name              = var.vm_disk_name != "" ? var.vm_disk_name : "${local.spoke_prefix}-osdisk-0"
         caching           = var.vm_disk_caching
         create_option     = var.vm_create_option
         managed_disk_type = var.vm_managed_disk_type
+        disk_size_gb      = var.vm_disk_size_gb
     }
 
     os_profile {

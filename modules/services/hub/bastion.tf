@@ -21,6 +21,8 @@ resource "azurerm_public_ip" "hub_bastion_pip" {
   allocation_method   = "Static"
   sku = "Standard"
 
+  idle_timeout_in_minutes = 15
+
   tags = local.tags
 }
 
@@ -121,13 +123,17 @@ resource "azurerm_network_security_group" "hub_bastion_nsg" {
 }
 
 // Bastion host
-resource "azurerm_bastion_host" "hub_bastion_host" {
-  name                = "${local.hub_prefix}-bastion-host"
+resource "azurerm_bastion_host" "hub_bastion" {
+  name                = "${local.hub_prefix}-bastion"
   location            = azurerm_resource_group.hub_vnet_rg.location
   resource_group_name = azurerm_resource_group.hub_vnet_rg.name
 
+  sku = "Standard"
+  scale_units = 10
+  tunneling_enabled = true
+
   ip_configuration {
-    name                 = "${local.hub_prefix}-bastion-host-ip-conf"
+    name                 = "${local.hub_prefix}-bastion-ip-conf"
     subnet_id            = azurerm_subnet.hub_bastion_subnet.id
     public_ip_address_id = azurerm_public_ip.hub_bastion_pip.id
   }
@@ -137,9 +143,9 @@ resource "azurerm_bastion_host" "hub_bastion_host" {
 
 resource "azurerm_monitor_diagnostic_setting" "hub_bastion_diag" {
   name               = "${local.hub_prefix}-bastion-diag"
-  target_resource_id = azurerm_bastion_host.hub_bastion_host.id
+  target_resource_id = azurerm_bastion_host.hub_bastion.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.hub_law.id
-  depends_on = [azurerm_bastion_host.hub_bastion_host, azurerm_log_analytics_workspace.hub_law]
+  depends_on = [azurerm_bastion_host.hub_bastion, azurerm_log_analytics_workspace.hub_law]
   
 
   log {

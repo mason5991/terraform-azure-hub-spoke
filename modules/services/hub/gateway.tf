@@ -17,7 +17,7 @@ resource "azurerm_public_ip" "hub_vpn_gateway_pip" {
     location            = azurerm_resource_group.hub_vnet_rg.location
     resource_group_name = azurerm_resource_group.hub_vnet_rg.name
 
-    allocation_method = "Dynamic"
+    allocation_method = "Static"
     
     tags = local.tags
 }

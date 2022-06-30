@@ -70,6 +70,10 @@ variable "vm_managed_disk_type" {
   default = "Standard_LRS"
 }
 
+variable "vm_disk_size_gb" {
+  default = 1024
+}
+
 variable "vnet_address_space" {
   description = "Spoke virutal network address space setting"
 }

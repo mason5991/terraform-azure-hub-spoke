@@ -9,4 +9,13 @@ module "spoke" {
   hub_vnet_rg_name = var.hub_vnet_rg_name
   vnet_address_space = var.vnet_address_space
   workload_address_prefixes = var.workload_address_prefixes
+  vm_size = var.vm_size
+  vm_publisher = var.vm_publisher
+  vm_offer = var.vm_offer
+  vm_sku = var.vm_sku
+  vm_version = var.vm_version
+  vm_create_option = var.vm_create_option
+  vm_managed_disk_type = var.vm_managed_disk_type
+  vm_disk_size_gb = var.vm_disk_size_gb
+  tags = var.tags
 }
