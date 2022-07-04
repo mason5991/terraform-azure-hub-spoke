@@ -62,6 +62,17 @@ resource "azurerm_network_security_group" "hub_mgmt_nsg" {
     }
 }
 
+resource "azurerm_subnet_network_security_group_association" "hub_mgmt_nsg_association" {
+    subnet_id                 = azurerm_subnet.hub_mgmt.id
+    network_security_group_id = azurerm_network_security_group.hub_mgmt_nsg.id
+
+    timeouts {
+        create = "2h"
+        update = "2h"
+        delete = "2h"
+    }
+}
+
 # Key for VM
 resource "tls_private_key" "hub_vm_ssh" {
   algorithm = "RSA"
