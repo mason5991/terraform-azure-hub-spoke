@@ -37,11 +37,14 @@ Workload - 10.1.1.64/27
 - 10.230.0.0/17
 
 Bastion - 10.230.0.0/26
-Firewall - 10.0.240.0/20
+Firewall - 10.230.240.0/20
+Mgmt - 10.230.0.64/27
 
-### Mntr spoke
+#### Monitoring spoke
+
+- 10.230.128.0/17
 
 Storage account - 10.230.252.0/22
 
-Internal mntr - 10.230.132.0/22
-External mntr - 10.230.152.0/22
+Monitoring internal - 10.230.132.0/22
+Monitoring external - 10.230.152.0/22
