@@ -1,5 +1,5 @@
 locals {
-    spoke_vnet_rg        = "${var.spoke_name}-vnet-rg"
+    spoke_rg             = "${var.spoke_name}-rg"
     spoke_prefix         = var.spoke_name
     mntr_internal_prefix = "${var.spoke_name}-int"
     mntr_external_prefix = "${var.spoke_name}-ext"
@@ -10,8 +10,8 @@ locals {
     }, var.tags)
 }
 
-resource "azurerm_resource_group" "spoke_vnet_rg" {
-    name     = local.spoke_vnet_rg
+resource "azurerm_resource_group" "spoke_rg" {
+    name     = local.spoke_rg
     location = local.location
 
     tags = local.spoke_tags
@@ -20,8 +20,8 @@ resource "azurerm_resource_group" "spoke_vnet_rg" {
 # Spoke virtual network
 resource "azurerm_virtual_network" "spoke_vnet" {
     name                = "${local.spoke_prefix}-vnet"
-    location            = azurerm_resource_group.spoke_vnet_rg.location
-    resource_group_name = azurerm_resource_group.spoke_vnet_rg.name
+    location            = azurerm_resource_group.spoke_rg.location
+    resource_group_name = azurerm_resource_group.spoke_rg.name
     address_space       = var.spoke_vnet_address_space
 
     tags = local.spoke_tags
@@ -31,7 +31,7 @@ resource "azurerm_virtual_network" "spoke_vnet" {
 # Storage account
 resource "azurerm_subnet" "storage_account_subnet" {
   name                 = "${local.spoke_prefix}-sg-snet"
-  resource_group_name  = azurerm_resource_group.spoke_vnet_rg.name
+  resource_group_name  = azurerm_resource_group.spoke_rg.name
   virtual_network_name = azurerm_virtual_network.spoke_vnet.name
   address_prefixes     = var.storage_account_subnet_address_prefixes
   service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"]
@@ -45,7 +45,7 @@ resource "azurerm_subnet" "storage_account_subnet" {
 
 module "storage_account" {
   source = "../modules/resources/storage-account"
-  vnet_rg = azurerm_resource_group.spoke_vnet_rg
+  resource_group = azurerm_resource_group.spoke_rg
   vnet = azurerm_virtual_network.spoke_vnet
   name_prefix = local.spoke_prefix
   subnet_create = var.storage_account_subnet_create
@@ -66,7 +66,7 @@ module "storage_account" {
 # Subnet for internal monitoring
 resource "azurerm_subnet" "mntr_internal_subnet" {
   name                 = "${local.mntr_internal_prefix}-snet"
-  resource_group_name  = azurerm_resource_group.spoke_vnet_rg.name
+  resource_group_name  = azurerm_resource_group.spoke_rg.name
   virtual_network_name = azurerm_virtual_network.spoke_vnet.name
   address_prefixes     = var.mntr_internal_subnet_address_prefixes
 
@@ -79,7 +79,7 @@ resource "azurerm_subnet" "mntr_internal_subnet" {
 
 module "mntr_internal_vm" {
   source = "../modules/resources/linux-vm"
-  vnet_rg = azurerm_resource_group.spoke_vnet_rg
+  resource_group = azurerm_resource_group.spoke_rg
   vnet = azurerm_virtual_network.spoke_vnet
   name_prefix = local.mntr_internal_prefix
   subnet_create = var.mntr_internal_subnet_create
@@ -103,7 +103,7 @@ module "mntr_internal_vm" {
 # Subnet for external monitoring
 resource "azurerm_subnet" "mntr_external_subnet" {
   name                 = "${local.mntr_external_prefix}-snet"
-  resource_group_name  = azurerm_resource_group.spoke_vnet_rg.name
+  resource_group_name  = azurerm_resource_group.spoke_rg.name
   virtual_network_name = azurerm_virtual_network.spoke_vnet.name
   address_prefixes     = var.mntr_external_subnet_address_prefixes
 
@@ -116,7 +116,7 @@ resource "azurerm_subnet" "mntr_external_subnet" {
 
 module "mntr_external_vm" {
   source = "../modules/resources/linux-vm"
-  vnet_rg = azurerm_resource_group.spoke_vnet_rg
+  resource_group = azurerm_resource_group.spoke_rg
   vnet = azurerm_virtual_network.spoke_vnet
   name_prefix = local.mntr_external_prefix
   subnet_create = var.mntr_external_subnet_create
@@ -145,7 +145,7 @@ module "mntr_external_vm" {
 // Network peering - spoke to hub
 resource "azurerm_virtual_network_peering" "spoke_hub_peer" {
     name                      = "${local.spoke_prefix}-spoke-hub-peer"
-    resource_group_name       = azurerm_resource_group.spoke_vnet_rg.name
+    resource_group_name       = azurerm_resource_group.spoke_rg.name
     virtual_network_name      = azurerm_virtual_network.spoke_vnet.name
     remote_virtual_network_id = azurerm_virtual_network.hub_vnet.id
 
@@ -159,7 +159,7 @@ resource "azurerm_virtual_network_peering" "spoke_hub_peer" {
 // Network peering - hub to spoke
 resource "azurerm_virtual_network_peering" "hub_spoke_peer" {
     name                         = "${local.spoke_prefix}-hub-spoke-peer"
-    resource_group_name          = azurerm_resource_group.hub_vnet_rg.name
+    resource_group_name          = azurerm_resource_group.hub_rg.name
     virtual_network_name         = azurerm_virtual_network.hub_vnet.name
     remote_virtual_network_id    = azurerm_virtual_network.spoke_vnet.id
     allow_virtual_network_access = true

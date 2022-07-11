@@ -2,7 +2,7 @@
 resource "azurerm_subnet" "subnet" {
   count                = var.subnet_create == true ? 1 : 0
   name                 = "AzureBastionSubnet"
-  resource_group_name  = var.vnet_rg.name
+  resource_group_name  = var.resource_group.name
   virtual_network_name = var.vnet.name
   address_prefixes     = var.subnet_address_prefixes
 
@@ -16,8 +16,8 @@ resource "azurerm_subnet" "subnet" {
 // Bastion public IP
 resource "azurerm_public_ip" "pip" {
   name                = "${var.name_prefix}-bt-pip"
-  resource_group_name = var.vnet_rg.name
-  location            = var.vnet_rg.location
+  resource_group_name = var.resource_group.name
+  location            = var.resource_group.location
   
   allocation_method   = var.pip_allocation_method
   sku = var.pip_sku
@@ -29,8 +29,8 @@ resource "azurerm_public_ip" "pip" {
 
 resource "azurerm_network_security_group" "nsg" {
   name                = "${var.name_prefix}-bt-nsg"
-  resource_group_name = var.vnet_rg.name
-  location            = var.vnet_rg.location
+  resource_group_name = var.resource_group.name
+  location            = var.resource_group.location
   security_rule {
     name                       = "Allow_TCP_443_Internet"
     priority                   = 100
@@ -137,8 +137,8 @@ resource "azurerm_subnet_network_security_group_association" "nsg_association" {
 // Bastion host
 resource "azurerm_bastion_host" "bastion" {
   name                = "${var.name_prefix}-bt"
-  location            = var.vnet_rg.location
-  resource_group_name = var.vnet_rg.name
+  location            = var.resource_group.location
+  resource_group_name = var.resource_group.name
 
   sku = var.sku
   scale_units = var.scale_units

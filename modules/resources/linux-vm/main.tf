@@ -1,7 +1,7 @@
 resource "azurerm_subnet" "subnet" {
     count                = var.subnet_create == true ? 1 : 0
     name                 = "${var.name_prefix}-snet"
-    resource_group_name  = var.vnet_rg.name
+    resource_group_name  = var.resource_group.name
     virtual_network_name = var.vnet.name
     address_prefixes     = var.subnet_address_prefixes
 
@@ -12,8 +12,8 @@ resource "azurerm_subnet" "subnet" {
 resource "azurerm_public_ip" "pip" {
   count               = var.pip_create == true ? 1 : 0
   name                = "${var.name_prefix}-pip"
-  resource_group_name = var.vnet_rg.name
-  location            = var.vnet_rg.location
+  resource_group_name = var.resource_group.name
+  location            = var.resource_group.location
   
   allocation_method   = var.pip_allocation_method
   sku = var.pip_sku
@@ -23,8 +23,8 @@ resource "azurerm_public_ip" "pip" {
 
 resource "azurerm_network_interface" "nic" {
     name                 = "${var.name_prefix}-nic"
-    location             = var.vnet_rg.location
-    resource_group_name  = var.vnet_rg.name
+    location             = var.resource_group.location
+    resource_group_name  = var.resource_group.name
     enable_ip_forwarding = var.nic_enable_ip_forwarding
 
     ip_configuration {
@@ -39,8 +39,8 @@ resource "azurerm_network_interface" "nic" {
 
 resource "azurerm_network_security_group" "nsg" {
     name = "${var.name_prefix}-nsg"
-    resource_group_name  = var.vnet_rg.name
-    location             = var.vnet_rg.location
+    resource_group_name  = var.resource_group.name
+    location             = var.resource_group.location
   
     timeouts {
         create = "2h"
@@ -71,8 +71,8 @@ resource "tls_private_key" "vm_ssh" {
 # Virtual machine
 resource "azurerm_virtual_machine" "vm" {
     name                  = var.vm_name != "" ? var.vm_name : "${var.name_prefix}-vm"
-    location              = var.vnet_rg.location
-    resource_group_name   = var.vnet_rg.name
+    location              = var.resource_group.location
+    resource_group_name   = var.resource_group.name
     network_interface_ids = [azurerm_network_interface.nic.id]
     vm_size               = var.vm_size
 

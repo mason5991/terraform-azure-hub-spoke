@@ -1,13 +1,13 @@
-output "hub_vnet_rg_location" {
-  value = azurerm_resource_group.hub_vnet_rg.location
+output "hub_rg_location" {
+  value = azurerm_resource_group.hub_rg.location
 }
 
-output "hub_vnet_rg_id" {
-  value = azurerm_resource_group.hub_vnet_rg.id
+output "hub_rg_id" {
+  value = azurerm_resource_group.hub_rg.id
 }
 
-output "hub_vnet_rg_name" {
-  value = azurerm_resource_group.hub_vnet_rg.name
+output "hub_rg_name" {
+  value = azurerm_resource_group.hub_rg.name
 }
 
 output "hub_vnet_id" {
@@ -106,16 +106,16 @@ output "hub_mgmt_vm_tls_private_key" {
 ##              Monitoring spoke              ##
 ################################################
 
-output "spoke_vnet_rg_location" {
-  value = azurerm_resource_group.spoke_vnet_rg.location
+output "spoke_rg_location" {
+  value = azurerm_resource_group.spoke_rg.location
 }
 
-output "spoke_vnet_rg_id" {
-  value = azurerm_resource_group.spoke_vnet_rg.id
+output "spoke_rg_id" {
+  value = azurerm_resource_group.spoke_rg.id
 }
 
-output "spoke_vnet_rg_name" {
-  value = azurerm_resource_group.spoke_vnet_rg.name
+output "spoke_rg_name" {
+  value = azurerm_resource_group.spoke_rg.name
 }
 
 output "spoke_vnet_id" {

@@ -2,7 +2,7 @@
 resource "azurerm_subnet" "subnet" {
   count                = var.subnet_create == true ? 1 : 0
   name                 = "GatewaySubnet"
-  resource_group_name  = var.vnet_rg.name
+  resource_group_name  = var.resource_group.name
   virtual_network_name = var.vnet.name
   address_prefixes     = var.subnet_address_prefixes
 
@@ -16,8 +16,8 @@ resource "azurerm_subnet" "subnet" {
 // Vpn gatway public IP
 resource "azurerm_public_ip" "pip" {
   name                = "${var.name_prefix}-vg-pip"
-  resource_group_name = var.vnet_rg.name
-  location            = var.vnet_rg.location
+  resource_group_name = var.resource_group.name
+  location            = var.resource_group.location
   
   allocation_method   = var.pip_allocation_method
   sku = var.pip_sku
@@ -30,8 +30,8 @@ resource "azurerm_public_ip" "pip" {
 # Virtual Network Gateway
 resource "azurerm_virtual_network_gateway" "vpn_gateway" {
     name                = "${var.name_prefix}-vg"
-    location            = var.vnet_rg.location
-    resource_group_name = var.vnet_rg.name
+    location            = var.resource_group.location
+    resource_group_name = var.resource_group.name
 
     type     = "Vpn"
     vpn_type = var.vpn_type

@@ -1,5 +1,5 @@
-variable "vnet_rg" {
-  description = "Virtual network resource group"
+variable "resource_group" {
+  description = "Resource group"
   type = object({
     name    = string
     location = string

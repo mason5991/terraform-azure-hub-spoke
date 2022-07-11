@@ -1,4 +1,6 @@
-variable "vnet_rg" {}
+variable "resource_group" {
+  description = "Resource group"
+}
 
 variable "vnet" {}
 

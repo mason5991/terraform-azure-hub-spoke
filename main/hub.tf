@@ -1,5 +1,5 @@
 locals {
-    hub_vnet_rg        = "${var.hub_name}-vnet-rg"
+    hub_rg               = "${var.hub_name}-rg"
     hub_prefix           = var.hub_name 
     hub_tags = merge({
       Terraform   = true
@@ -9,8 +9,8 @@ locals {
 }
 
 
-resource "azurerm_resource_group" "hub_vnet_rg" {
-    name     = local.hub_vnet_rg
+resource "azurerm_resource_group" "hub_rg" {
+    name     = local.hub_rg
     location = local.location
 
     tags = local.hub_tags
@@ -19,8 +19,8 @@ resource "azurerm_resource_group" "hub_vnet_rg" {
 # Hub virtual network
 resource "azurerm_virtual_network" "hub_vnet" {
     name                = "${local.hub_prefix}-vnet"
-    location            = azurerm_resource_group.hub_vnet_rg.location
-    resource_group_name = azurerm_resource_group.hub_vnet_rg.name
+    location            = azurerm_resource_group.hub_rg.location
+    resource_group_name = azurerm_resource_group.hub_rg.name
     address_space       = var.hub_vnet_address_space
 
     tags = local.hub_tags
@@ -29,7 +29,7 @@ resource "azurerm_virtual_network" "hub_vnet" {
 # Bastion
 resource "azurerm_subnet" "bastion_subnet" {
   name                 = "AzureBastionSubnet"
-  resource_group_name  = azurerm_resource_group.hub_vnet_rg.name
+  resource_group_name  = azurerm_resource_group.hub_rg.name
   virtual_network_name = azurerm_virtual_network.hub_vnet.name
   address_prefixes     = var.bastion_subnet_address_prefixes
 
@@ -42,7 +42,7 @@ resource "azurerm_subnet" "bastion_subnet" {
 
 module "bastion" {
   source = "../modules/resources/bastion"
-  vnet_rg = azurerm_resource_group.hub_vnet_rg
+  resource_group = azurerm_resource_group.hub_rg
   vnet = azurerm_virtual_network.hub_vnet
   name_prefix = local.hub_prefix
   subnet_create = var.bastion_subnet_create
@@ -59,7 +59,7 @@ module "bastion" {
 # Firewall
 resource "azurerm_subnet" "firewall_subnet" {
   name                 = "AzureFirewallSubnet"
-  resource_group_name  = azurerm_resource_group.hub_vnet_rg.name
+  resource_group_name  = azurerm_resource_group.hub_rg.name
   virtual_network_name = azurerm_virtual_network.hub_vnet.name
   address_prefixes     = var.firewall_subnet_address_prefixes
 
@@ -72,7 +72,7 @@ resource "azurerm_subnet" "firewall_subnet" {
 
 module "firewall" {
   source = "../modules/resources/firewall"
-  vnet_rg = azurerm_resource_group.hub_vnet_rg
+  resource_group = azurerm_resource_group.hub_rg
   vnet = azurerm_virtual_network.hub_vnet
   vnet_address_space = var.hub_vnet_address_space
   name_prefix = local.hub_prefix
@@ -90,7 +90,7 @@ module "firewall" {
 # Vpn gateway
 resource "azurerm_subnet" "vpn_gateway_subnet" {
   name                 = "GatewaySubnet"
-  resource_group_name  = azurerm_resource_group.hub_vnet_rg.name
+  resource_group_name  = azurerm_resource_group.hub_rg.name
   virtual_network_name = azurerm_virtual_network.hub_vnet.name
   address_prefixes     = var.vpn_gateway_subnet_address_prefixes
 
@@ -103,7 +103,7 @@ resource "azurerm_subnet" "vpn_gateway_subnet" {
 
 module "vpn_gateway" {
   source = "../modules/resources/vpn-gateway"
-  vnet_rg = azurerm_resource_group.hub_vnet_rg
+  resource_group = azurerm_resource_group.hub_rg
   vnet = azurerm_virtual_network.hub_vnet
   name_prefix = local.hub_prefix
   subnet_create = var.vpn_gateway_subnet_create
@@ -121,7 +121,7 @@ module "vpn_gateway" {
 # Log analytics workspace
 module "log_analytics_workspace" {
   source = "../modules/resources/log-analytics-workspace"
-  vnet_rg = azurerm_resource_group.hub_vnet_rg
+  resource_group = azurerm_resource_group.hub_rg
   vnet = azurerm_virtual_network.hub_vnet
   name_prefix = local.hub_prefix
 
@@ -131,7 +131,7 @@ module "log_analytics_workspace" {
 # Mgmt
 resource "azurerm_subnet" "hub_mgmt_subnet" {
   name                 = "AzureFirewallSubnet"
-  resource_group_name  = azurerm_resource_group.hub_vnet_rg.name
+  resource_group_name  = azurerm_resource_group.hub_rg.name
   virtual_network_name = azurerm_virtual_network.hub_vnet.name
   address_prefixes     = var.firewall_subnet_address_prefixes
 
@@ -144,7 +144,7 @@ resource "azurerm_subnet" "hub_mgmt_subnet" {
 
 module "hub_mgmt_vm" {
   source = "../modules/resources/linux-vm"
-  vnet_rg = azurerm_resource_group.hub_vnet_rg
+  resource_group = azurerm_resource_group.hub_rg
   vnet = azurerm_virtual_network.hub_vnet
   name_prefix = "${local.hub_prefix}-mgmt"
   subnet_create = var.hub_mgmt_subnet_create

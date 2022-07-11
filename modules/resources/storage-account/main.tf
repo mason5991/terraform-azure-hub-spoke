@@ -1,7 +1,7 @@
 resource "azurerm_subnet" "storage_account_subnet" {
   count                = var.subnet_create == true ? 1 : 0
   name                 = "${var.name_prefix}-sg-snet"
-  resource_group_name  = var.vnet_rg.name
+  resource_group_name  = var.resource_group.name
   virtual_network_name = var.vnet.name
   address_prefixes     = var.subnet_address_prefixes
   service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"]
@@ -15,8 +15,8 @@ resource "azurerm_subnet" "storage_account_subnet" {
 
 resource "azurerm_storage_account" "storage_account" {
   name                     = "${var.name_prefix}storageaccount"
-  resource_group_name      = var.vnet_rg.name
-  location                 = var.vnet_rg.location
+  resource_group_name      = var.resource_group.name
+  location                 = var.resource_group.location
   account_tier             = var.account_tier
   account_replication_type = var.account_replication_type
 

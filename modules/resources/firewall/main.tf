@@ -1,7 +1,7 @@
 resource "azurerm_subnet" "subnet" {
   count                = var.subnet_create == true ? 1 : 0
   name                 = "AzureFirewallSubnet"
-  resource_group_name  = var.vnet_rg.name
+  resource_group_name  = var.resource_group.name
   virtual_network_name = var.vnet.name
   address_prefixes     = var.subnet_address_prefixes
 
@@ -15,8 +15,8 @@ resource "azurerm_subnet" "subnet" {
 # Firewall public IP
 resource "azurerm_public_ip" "pip" {
   name                = "${var.name_prefix}-firewall-pip"
-  location            = var.vnet_rg.location
-  resource_group_name = var.vnet_rg.name
+  location            = var.resource_group.location
+  resource_group_name = var.resource_group.name
 
   allocation_method   = "Static"
   sku                 = var.pip_sku
@@ -26,8 +26,8 @@ resource "azurerm_public_ip" "pip" {
 
 resource "azurerm_network_security_group" "nsg" {
     name = "${var.name_prefix}-nsg"
-    resource_group_name  = var.vnet_rg.name
-    location             = var.vnet_rg.location
+    resource_group_name  = var.resource_group.name
+    location             = var.resource_group.location
   
     timeouts {
         create = "2h"
@@ -52,8 +52,8 @@ resource "azurerm_subnet_network_security_group_association" "nsg_association" {
 # Firewall
 resource "azurerm_firewall" "firewall" {
   name                = "${var.name_prefix}-firewall"
-  location            = var.vnet_rg.location
-  resource_group_name = var.vnet_rg.name
+  location            = var.resource_group.location
+  resource_group_name = var.resource_group.name
 
   sku_name = "AZFW_VNet"
   sku_tier = var.sku
@@ -71,7 +71,7 @@ resource "azurerm_firewall" "firewall" {
 resource "azurerm_firewall_network_rule_collection" "firewall_nrc_dns" {
   name = "${var.name_prefix}-firewall-nrc-dns"
   azure_firewall_name = azurerm_firewall.firewall.name
-  resource_group_name = var.vnet_rg.name
+  resource_group_name = var.resource_group.name
   priority = 500
   action = "Allow"
 
@@ -88,7 +88,7 @@ resource "azurerm_firewall_network_rule_collection" "firewall_nrc_dns" {
 resource "azurerm_firewall_network_rule_collection" "firewall_nrc" {
   name = "${var.name_prefix}-firewall-nrc"
   azure_firewall_name = azurerm_firewall.firewall.name
-  resource_group_name = var.vnet_rg.name
+  resource_group_name = var.resource_group.name
   priority = 600
   action = "Allow"
   rule {

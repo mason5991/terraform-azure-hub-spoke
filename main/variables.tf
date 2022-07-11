@@ -183,5 +183,5 @@ variable "tags" {
 }
 
 locals {
-  location             = var.location
+  location = var.location
 }

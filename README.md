@@ -19,32 +19,33 @@ terraform apply main.destroy.plan
 
 ### Nodes hub
 
-- 10.0.0.0/16
+Vnet - 10.0.0.0/16
 
-Gateway - 10.0.230.0/24
-Firewall - 10.0.240.0/20
-Bastion - 10.0.0.0/26
-Mgmt - 10.0.0.64/27
+- Gateway - 10.0.230.0/24
+- Firewall - 10.0.240.0/20
+- Bastion - 10.0.0.0/26
+- Mgmt - 10.0.0.64/27
 
 #### Kava node
 
-- 10.1.1.0/24
+Vnet - 10.1.1.0/24
 
-Workload - 10.1.1.64/27
+- Workload - 10.1.1.64/27
 
 ### Main hub
 
-- 10.230.0.0/17
+Vnet - 10.255.0.0/16
 
-Bastion - 10.230.0.0/26
-Firewall - 10.230.240.0/20
-Mgmt - 10.230.0.64/27
+- Bastion - 10.255.255.0/24
+- Firewall - 10.255.0.0/20
+- Vpn gateway - 10.255.250.0/24
+- Mgmt - 10.255.254.0/24
 
 #### Monitoring spoke
 
-- 10.230.128.0/17
+Vnet - 10.250.0.0/17
 
-Storage account - 10.230.252.0/22
+- Storage account - 10.250.124.0/22
 
-Monitoring internal - 10.230.132.0/22
-Monitoring external - 10.230.152.0/22
+- Monitoring internal - 10.250.0.0/22
+- Monitoring external - 10.250.64.0/22
