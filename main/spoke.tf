@@ -27,6 +27,7 @@ resource "azurerm_virtual_network" "spoke_vnet" {
     tags = local.spoke_tags
 }
 
+
 # Storage account
 resource "azurerm_subnet" "storage_account_subnet" {
   name                 = "${local.spoke_prefix}-sg-snet"
@@ -67,7 +68,7 @@ resource "azurerm_subnet" "mntr_internal_subnet" {
   name                 = "${local.mntr_internal_prefix}-snet"
   resource_group_name  = azurerm_resource_group.spoke_vnet_rg.name
   virtual_network_name = azurerm_virtual_network.spoke_vnet.name
-  address_prefixes     = var.storage_account_subnet_address_prefixes
+  address_prefixes     = var.mntr_internal_subnet_address_prefixes
 
   timeouts {
     create = "2h"
@@ -104,7 +105,7 @@ resource "azurerm_subnet" "mntr_external_subnet" {
   name                 = "${local.mntr_external_prefix}-snet"
   resource_group_name  = azurerm_resource_group.spoke_vnet_rg.name
   virtual_network_name = azurerm_virtual_network.spoke_vnet.name
-  address_prefixes     = var.storage_account_subnet_address_prefixes
+  address_prefixes     = var.mntr_external_subnet_address_prefixes
 
   timeouts {
     create = "2h"

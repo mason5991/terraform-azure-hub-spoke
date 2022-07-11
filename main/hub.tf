@@ -8,6 +8,7 @@ locals {
     }, var.tags)
 }
 
+
 resource "azurerm_resource_group" "hub_vnet_rg" {
     name     = local.hub_vnet_rg
     location = local.location
@@ -85,6 +86,36 @@ module "firewall" {
 
   tags = local.hub_tags
 }
+
+# Vpn gateway
+resource "azurerm_subnet" "vpn_gateway_subnet" {
+  name                 = "GatewaySubnet"
+  resource_group_name  = azurerm_resource_group.hub_vnet_rg.name
+  virtual_network_name = azurerm_virtual_network.hub_vnet.name
+  address_prefixes     = var.vpn_gateway_subnet_address_prefixes
+
+  timeouts {
+    create = "2h"
+    update = "2h"
+    delete = "2h"
+  }
+}
+
+module "vpn_gateway" {
+  source = "../modules/resources/vpn-gateway"
+  vnet_rg = azurerm_resource_group.hub_vnet_rg
+  vnet = azurerm_virtual_network.hub_vnet
+  name_prefix = local.hub_prefix
+  subnet_create = var.vpn_gateway_subnet_create
+  subnet = azurerm_subnet.vpn_gateway_subnet
+  subnet_address_prefixes = var.vpn_gateway_subnet_address_prefixes
+  vpn_gateway_monitoring = var.vpn_gateway_monitoring
+  pip_monitoring = var.vpn_gateway_pip_monitoring
+  log_analytics_workspace_id = module.log_analytics_workspace.law.id
+
+  tags = local.hub_tags
+}
+
 
 
 # Log analytics workspace

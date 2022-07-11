@@ -52,6 +52,24 @@ output "firewall_public_ip" {
   value = module.firewall.pip.ip_address
 }
 
+# Vpn gateway
+output "vpn_gateway_snet_id" {
+  value = azurerm_subnet.vpn_gateway_subnet.id
+}
+
+output "vpn_gateway_id" {
+  value = module.vpn_gateway.vpn_gateway.id
+}
+
+output "vpn_gateway_name" {
+  value = module.vpn_gateway.vpn_gateway.name
+}
+
+output "vpn_gateway_public_ip" {
+  value = module.vpn_gateway.pip.ip_address
+}
+
+
 # Log analytics workspace
 output "log_analytics_workspace_id" {
   value = module.log_analytics_workspace.law.id

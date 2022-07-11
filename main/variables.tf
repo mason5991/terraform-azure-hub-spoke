@@ -78,6 +78,27 @@ variable "firewall_pip_monitoring" {
   default = false
 }
 
+# Vpn gateway
+variable "vpn_gateway_subnet_create" {
+  type = bool
+  default = false
+}
+
+variable "vpn_gateway_subnet_address_prefixes" {
+  type = list(string)
+}
+
+variable "vpn_gateway_monitoring" {
+  type = bool
+  default = false
+}
+
+variable "vpn_gateway_pip_monitoring" {
+  type = bool
+  default = false
+}
+
+
 # Storage account
 variable "storage_account_subnet_create" {
   type = bool
