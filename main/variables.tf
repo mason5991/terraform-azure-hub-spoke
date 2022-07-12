@@ -68,11 +68,6 @@ variable "firewall_monitoring" {
   default = false
 }
 
-variable "firewall_nsg_monitoring" {
-  type = bool
-  default = false
-}
-
 variable "firewall_pip_monitoring" {
   type = bool
   default = false

@@ -80,7 +80,6 @@ module "firewall" {
   subnet = azurerm_subnet.firewall_subnet
   subnet_address_prefixes = var.firewall_subnet_address_prefixes
   firewall_monitoring = var.firewall_monitoring
-  nsg_monitoring = var.firewall_nsg_monitoring
   pip_monitoring = var.firewall_pip_monitoring
   log_analytics_workspace_id = module.log_analytics_workspace.law.id
 
@@ -130,10 +129,10 @@ module "log_analytics_workspace" {
 
 # Mgmt
 resource "azurerm_subnet" "hub_mgmt_subnet" {
-  name                 = "AzureFirewallSubnet"
+  name                 = "${local.hub_prefix}-mgmt-snet"
   resource_group_name  = azurerm_resource_group.hub_rg.name
   virtual_network_name = azurerm_virtual_network.hub_vnet.name
-  address_prefixes     = var.firewall_subnet_address_prefixes
+  address_prefixes     = var.hub_mgmt_subnet_address_prefixes
 
   timeouts {
     create = "2h"

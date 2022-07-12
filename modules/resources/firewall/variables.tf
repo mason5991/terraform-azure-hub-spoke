@@ -48,10 +48,6 @@ variable "firewall_monitoring" {
   default = false
 }
 
-variable "nsg_monitoring" {
-  default = false
-}
-
 variable "pip_monitoring" {
   default = false
 }

@@ -51,10 +51,10 @@ module "storage_account" {
   subnet_create = var.storage_account_subnet_create
   subnet = azurerm_subnet.storage_account_subnet
   subnet_address_prefixes = var.storage_account_subnet_address_prefixes
-  network_rules = [{
+  /* network_rules = [{
     default_action             = "Allow"
     virtual_network_subnet_ids = [azurerm_subnet.mntr_internal_subnet.id, azurerm_subnet.mntr_external_subnet.id]
-  }]
+  }] */
 
   storage_share = var.storage_share
 
@@ -153,7 +153,7 @@ resource "azurerm_virtual_network_peering" "spoke_hub_peer" {
     allow_forwarded_traffic = true
     allow_gateway_transit   = false
     use_remote_gateways     = true
-    depends_on = [azurerm_virtual_network.hub_vnet, azurerm_virtual_network.spoke_vnet]
+    depends_on = [azurerm_virtual_network.hub_vnet, azurerm_virtual_network.spoke_vnet, module.vpn_gateway]
 }
 
 // Network peering - hub to spoke
@@ -166,5 +166,5 @@ resource "azurerm_virtual_network_peering" "hub_spoke_peer" {
     allow_forwarded_traffic      = true
     allow_gateway_transit        = true
     use_remote_gateways          = false
-    depends_on = [azurerm_virtual_network.hub_vnet, azurerm_virtual_network.spoke_vnet]
+    depends_on = [azurerm_virtual_network.hub_vnet, azurerm_virtual_network.spoke_vnet, module.vpn_gateway]
 }

@@ -24,31 +24,6 @@ resource "azurerm_public_ip" "pip" {
   tags = local.tags
 }
 
-resource "azurerm_network_security_group" "nsg" {
-    name = "${var.name_prefix}-nsg"
-    resource_group_name  = var.resource_group.name
-    location             = var.resource_group.location
-  
-    timeouts {
-        create = "2h"
-        update = "2h"
-        delete = "2h"
-    }
-
-    tags = local.tags
-}
-
-resource "azurerm_subnet_network_security_group_association" "nsg_association" {
-    subnet_id                 = var.subnet_create == true ? azurerm_subnet.subnet[0].id : var.subnet.id
-    network_security_group_id = azurerm_network_security_group.nsg.id
-
-    timeouts {
-        create = "2h"
-        update = "2h"
-        delete = "2h"
-    }
-}
-
 # Firewall
 resource "azurerm_firewall" "firewall" {
   name                = "${var.name_prefix}-firewall"
@@ -116,36 +91,6 @@ resource "azurerm_monitor_diagnostic_setting" "firewall_diag" {
 
   metric {
     category = "AllMetrics"
-
-    retention_policy {
-      enabled = true
-    }
-  }
-
-  timeouts {
-    create = "2h"
-    update = "2h"
-    delete = "2h"
-  }
-}
-
-resource "azurerm_monitor_diagnostic_setting" "firewall_nsg_diag" {
-  count                      = var.nsg_monitoring == true ? 1 : 0
-  name                       = "${var.name_prefix}-firewall-nsg-diag"
-  target_resource_id         = azurerm_network_security_group.nsg.id
-  log_analytics_workspace_id = var.log_analytics_workspace_id
-  depends_on                 = [azurerm_network_security_group.nsg, var.log_analytics_workspace_id]
-  log {
-    category = "NetworkSecurityGroupEvent"
-    enabled  = true
-
-    retention_policy {
-      enabled = true
-    }
-  }
-  log {
-    category = "NetworkSecurityGroupRuleCounter"
-    enabled = true
 
     retention_policy {
       enabled = true
