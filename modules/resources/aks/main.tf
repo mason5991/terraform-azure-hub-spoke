@@ -6,20 +6,20 @@ resource "tls_private_key" "vm_ssh" {
 
 resource "azurerm_kubernetes_cluster" "k8s" {
     name                = var.cluster_name
-    location            = var.vnet_rg.location
-    resource_group_name = var.vnet_rg.name
+    location            = var.resource_group.location
+    resource_group_name = var.resource_group.name
     dns_prefix          = var.dns_prefix
     depends_on =[var.subnet]
     #private_cluster_enabled = var.private_cluster_enabled
+    public_network_access_enabled = var.public_network_access_enabled
+    sku_tier = var.sku_tier
 
     network_profile {
         network_plugin      =   "azure"
-        load_balancer_sku   =   "Standard"
+        load_balancer_sku   =   var.load_balancer_sku
     }
     
-    role_based_access_control {
-        enabled = true
-    }
+    role_based_access_control_enabled = var.role_based_access_control_enabled
     
     linux_profile {
         admin_username = var.admin_username
@@ -30,7 +30,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     }
 
     default_node_pool {
-        name            = "agentpool"
+        name            = var.default_node_pool_name
         node_count      = var.agent_count
         vm_size         = var.vm_size
         vnet_subnet_id  = var.subnet.id

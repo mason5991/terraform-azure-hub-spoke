@@ -173,6 +173,16 @@ variable "vm_disk_size_gb" {
   default = 1024
 }
 
+# Container registry
+variable "acr_name" {
+  type = string
+}
+
+variable "acr_admin_enabled" {
+  type = bool
+  default = true
+}
+
 variable "tags" {
   default = {}
 }

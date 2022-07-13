@@ -102,6 +102,25 @@ output "hub_mgmt_vm_tls_private_key" {
   sensitive = true
 }
 
+# Container registry
+output "acr_id" {
+  value = module.container_registry.acr.id
+}
+
+output "acr_login_server" {
+  value = module.container_registry.acr.login_server
+}
+
+output "acr_admin_username" {
+  value = module.container_registry.acr.admin_username
+}
+
+output "admin_password" {
+  value = module.container_registry.acr.admin_password
+  sensitive = true
+}
+
+
 ################################################
 ##              Monitoring spoke              ##
 ################################################
