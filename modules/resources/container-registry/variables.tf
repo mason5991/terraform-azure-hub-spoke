@@ -10,13 +10,14 @@ variable "acr_name" {
   type = string
 }
 
-variable "name_prefix" {
-  
-}
-
 variable "admin_enabled" {
   type = bool
   default = false
+}
+
+variable "identity_ids" {
+  type = list(string)
+  default = []
 }
 
 variable "tags" {

@@ -18,6 +18,10 @@ variable "subnet_address_prefixes" {
   type = list(string)
 }
 
+variable "kubernetes_version" {
+  default = "1.23.8"
+}
+
 variable "admin_username" {
   default = "auzreuser"
 }
@@ -54,6 +58,14 @@ variable "role_based_access_control_enabled" {
   type = bool
   default = true
 }
+
+/* variable "kubelet_identity" {
+  type = object({
+    client_id = string
+    object_id = string
+    user_assigned_identity_id = string
+  })
+} */
 
 variable "tags" {}
 

@@ -9,7 +9,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     location            = var.resource_group.location
     resource_group_name = var.resource_group.name
     dns_prefix          = var.dns_prefix
-    depends_on =[var.subnet]
+    kubernetes_version  = var.kubernetes_version
     #private_cluster_enabled = var.private_cluster_enabled
     public_network_access_enabled = var.public_network_access_enabled
     sku_tier = var.sku_tier
@@ -40,7 +40,22 @@ resource "azurerm_kubernetes_cluster" "k8s" {
      
     identity {
         type = "SystemAssigned"
+        /* type = "UserAssigned"
+        identity_ids = [azurerm_user_assigned_identity.k8s_uai.id] */
     }
+
+    /* kubelet_identity {
+        client_id = var.kubelet_identity.client_id
+        object_id = var.kubelet_identity.object_id
+        user_assigned_identity_id = var.kubelet_identity.user_assigned_identity_id
+    } */
 
     tags = local.tags
 }
+
+/* resource "azurerm_user_assigned_identity" "k8s_uai" {
+  resource_group_name = var.resource_group.name
+  location            = var.resource_group.location
+
+  name = "${var.cluster_name}-k8s-uai"
+} */

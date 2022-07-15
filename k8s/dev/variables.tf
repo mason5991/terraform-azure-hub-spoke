@@ -29,6 +29,10 @@ variable "agent_count" {
 variable "tags" {
   default = {}
 }
+/* 
+variable "registry_uai_name" {}
+
+variable "registry_uai_resource_group_name" {} */
 
 locals {
   tags = merge({

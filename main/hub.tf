@@ -164,17 +164,3 @@ module "hub_mgmt_vm" {
     Category = "infra-mgmt"
   }, local.hub_tags)
 }
-
-
-# Container registry
-module "container_registry" {
-  source = "../modules/resources/container-registry"
-  acr_name = var.acr_name
-  name_prefix = local.hub_prefix
-  resource_group = azurerm_resource_group.hub_rg
-  admin_enabled = var.acr_admin_enabled
-
-  tags = merge({ 
-    Category = "acr"
-  }, local.hub_tags)
-}
