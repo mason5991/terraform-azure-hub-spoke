@@ -47,7 +47,7 @@ variable "load_balancer_sku" {
 }
 
 variable "public_network_access_enabled" {
-  default = false
+  default = true
 }
 
 variable "default_node_pool_name" {
@@ -58,14 +58,6 @@ variable "role_based_access_control_enabled" {
   type = bool
   default = true
 }
-
-/* variable "kubelet_identity" {
-  type = object({
-    client_id = string
-    object_id = string
-    user_assigned_identity_id = string
-  })
-} */
 
 variable "tags" {}
 

@@ -1,7 +1,17 @@
-// Vpn gateway subnet
+locals {
+  backend_address_pool_name      = "${var.name_prefix}-beap"
+  frontend_port_name             = "${var.name_prefix}-feport"
+  frontend_ip_configuration_name = "${var.name_prefix}-feip"
+  http_setting_name              = "${var.name_prefix}-be-htst"
+  listener_name                  = "${var.name_prefix}-httplstn"
+  request_routing_rule_name      = "${var.name_prefix}-rqrt"
+  redirect_configuration_name    = "${var.name_prefix}-rdrcfg"
+}
+
+// Application gateway subnet
 resource "azurerm_subnet" "subnet" {
   count                = var.subnet_create == true ? 1 : 0
-  name                 = "GatewaySubnet"
+  name                 = "application-gateway-snet"
   resource_group_name  = var.resource_group.name
   virtual_network_name = var.vnet.name
   address_prefixes     = var.subnet_address_prefixes
@@ -13,9 +23,9 @@ resource "azurerm_subnet" "subnet" {
   }
 }
 
-// Vpn gatway public IP
+// Application gatway public IP
 resource "azurerm_public_ip" "pip" {
-  name                = "${var.name_prefix}-vg-pip"
+  name                = "${var.name_prefix}-ag-pip"
   resource_group_name = var.resource_group.name
   location            = var.resource_group.location
   
@@ -27,24 +37,67 @@ resource "azurerm_public_ip" "pip" {
   tags = local.tags
 }
 
-# Virtual Network Gateway
-resource "azurerm_virtual_network_gateway" "vpn_gateway" {
-    name                = "${var.name_prefix}-vg"
+# Application gateway
+resource "azurerm_application_gateway" "application_gateway" {
+    name                = "${var.name_prefix}-ag"
     location            = var.resource_group.location
     resource_group_name = var.resource_group.name
 
-    type     = "Vpn"
-    vpn_type = var.vpn_type
+    sku {
+      name     = var.sku_name
+      tier     = var.sku_tier
+      capacity = var.sku_capacity
+    }
 
-    active_active = var.active_active
-    enable_bgp    = var.enable_bgp
-    sku           = var.sku
+    gateway_ip_configuration {
+      name      = "${var.name_prefix}-ag-ip-conf"
+      subnet_id = var.subnet_create == true ? azurerm_subnet.subnet[0].id : var.subnet.id
+    }
 
-    ip_configuration {
-        name                          = "${var.name_prefix}-vg-ip-conf"
-        public_ip_address_id          = azurerm_public_ip.pip.id
-        private_ip_address_allocation = "Dynamic"
-        subnet_id                     = var.subnet_create == true ? azurerm_subnet.subnet[0].id : var.subnet.id
+    waf_configuration {
+      enabled = true
+      firewall_mode = "Detection"
+      rule_set_type = "OWASP"
+      rule_set_version = "3.2"
+    }
+
+    frontend_port {
+      name = local.frontend_port_name
+      port = 80
+    }
+    
+    frontend_ip_configuration {
+      name                 = local.frontend_ip_configuration_name
+      public_ip_address_id = azurerm_public_ip.pip.id
+    }
+
+    backend_address_pool {
+      name = local.backend_address_pool_name
+    }
+
+    backend_http_settings {
+      name                  = local.http_setting_name
+      cookie_based_affinity = "Disabled"
+      path                  = "/"
+      protocol              = "Http"
+      port                  = 80
+      request_timeout       = 60
+    }
+
+    http_listener {
+      name                           = local.listener_name
+      frontend_ip_configuration_name = local.frontend_ip_configuration_name
+      frontend_port_name             = local.frontend_port_name
+      protocol                       = "Http"
+    }
+
+    request_routing_rule {
+      name                       = local.request_routing_rule_name
+      rule_type                  = "Basic"
+      http_listener_name         = local.listener_name
+      backend_address_pool_name  = local.backend_address_pool_name
+      backend_http_settings_name = local.http_setting_name
+      priority                   = 100
     }
 
     depends_on = [azurerm_public_ip.pip]
@@ -53,12 +106,12 @@ resource "azurerm_virtual_network_gateway" "vpn_gateway" {
 }
 
 
-resource "azurerm_monitor_diagnostic_setting" "vpn_gateway_diag" {
-  count              = var.vpn_gateway_monitoring == true ? 1 : 0
-  name               = "${var.name_prefix}-vg-diag"
-  target_resource_id = azurerm_virtual_network_gateway.vpn_gateway.id
+resource "azurerm_monitor_diagnostic_setting" "application_gateway_diag" {
+  count              = var.application_gateway_monitoring == true ? 1 : 0
+  name               = "${var.name_prefix}-ag-diag"
+  target_resource_id = azurerm_application_gateway.application_gateway.id
   log_analytics_workspace_id = var.log_analytics_workspace_id
-  depends_on = [azurerm_virtual_network_gateway.vpn_gateway, var.log_analytics_workspace_id]
+  depends_on = [azurerm_application_gateway.application_gateway, var.log_analytics_workspace_id]
   
 
   metric {
@@ -77,9 +130,9 @@ resource "azurerm_monitor_diagnostic_setting" "vpn_gateway_diag" {
 }
 
 
-resource "azurerm_monitor_diagnostic_setting" "vpn_gateway_pip_diag" {
+resource "azurerm_monitor_diagnostic_setting" "application_gateway_pip_diag" {
   count                      = var.pip_monitoring == true ? 1 : 0
-  name                       = "${var.name_prefix}-vg-pip-diag"
+  name                       = "${var.name_prefix}-ag-pip-diag"
   target_resource_id         = azurerm_public_ip.pip.id
   log_analytics_workspace_id = var.log_analytics_workspace_id
   depends_on                 = [azurerm_public_ip.pip, var.log_analytics_workspace_id]

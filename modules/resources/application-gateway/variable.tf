@@ -14,7 +14,7 @@ variable "vnet" {
 }
 
 variable "subnet_create" {
-  description = "Need to create a subnet for vpn gateway or not"
+  description = "Need to create a subnet for application gateway or not"
   type = bool
   default = false
 }
@@ -26,44 +26,40 @@ variable "subnet_address_prefixes" {
 }
 
 variable "pip_allocation_method" {
-  description = "Vpn gateway public IP allocation method"
-  default = "Dynamic"
+  description = "Application gateway public IP allocation method"
+  default = "Static"
 }
 
 variable "pip_sku" {
-  description = "Vpn gateway public IP sku"
+  description = "Application gateway public IP sku"
   default = "Standard"
 }
 
 variable "pip_idle_timeout_in_minutes" {
-  description = "Vpn gateway public IP timeout"
+  description = "Application gateway public IP timeout"
   default = 4
 }
 
 variable "name_prefix" {
-  description = "Vpn gateway name prefix"
+  description = "Application gateway name prefix"
   type = string
 }
 
-variable "vpn_type" {
-  default = "RouteBased"
+variable "sku_name" {
+  type = string
+  default = "WAF_v2"
 }
 
-variable "sku" {
-  default = "VpnGw1"
+variable "sku_tier" {
+  type = string
+  default = "WAF_v2"
 }
 
-variable "active_active" {
-  type = bool
-  default = false
+variable "sku_capacity" {
+  default = 2
 }
 
-variable "enable_bgp" {
-  type = bool
-  default = false
-}
-
-variable "vpn_gateway_monitoring" {
+variable "application_gateway_monitoring" {
   default = false
 }
 

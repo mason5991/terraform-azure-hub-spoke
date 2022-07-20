@@ -76,7 +76,7 @@ module "firewall" {
   vnet = azurerm_virtual_network.hub_vnet
   vnet_address_space = var.hub_vnet_address_space
   name_prefix = local.hub_prefix
-  subnet_create = var.bastion_subnet_create
+  subnet_create = var.firewall_subnet_create
   subnet = azurerm_subnet.firewall_subnet
   subnet_address_prefixes = var.firewall_subnet_address_prefixes
   firewall_monitoring = var.firewall_monitoring
@@ -115,7 +115,35 @@ module "vpn_gateway" {
   tags = local.hub_tags
 }
 
+# Application gateway
+resource "azurerm_subnet" "application_gateway_subnet" {
+  name                 = "${local.hub_prefix}-ag-snet"
+  resource_group_name  = azurerm_resource_group.hub_rg.name
+  virtual_network_name = azurerm_virtual_network.hub_vnet.name
+  address_prefixes     = var.application_gateway_subnet_address_prefixes
 
+  timeouts {
+    create = "2h"
+    update = "2h"
+    delete = "2h"
+  }
+}
+
+module "application_gateway" {
+  source = "../modules/resources/application-gateway"
+  resource_group = azurerm_resource_group.hub_rg
+  vnet = azurerm_virtual_network.hub_vnet
+  name_prefix = local.hub_prefix
+  subnet_create = var.application_gateway_subnet_create
+  subnet = azurerm_subnet.application_gateway_subnet
+  subnet_address_prefixes = var.application_gateway_subnet_address_prefixes
+  application_gateway_monitoring = var.application_gateway_monitoring
+  pip_monitoring = var.application_gateway_pip_monitoring
+  log_analytics_workspace_id = module.log_analytics_workspace.law.id
+
+  tags = local.hub_tags
+
+}
 
 # Log analytics workspace
 module "log_analytics_workspace" {

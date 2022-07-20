@@ -69,6 +69,23 @@ output "vpn_gateway_public_ip" {
   value = module.vpn_gateway.pip.ip_address
 }
 
+# Application gateway
+output "application_gateway_snet_id" {
+  value = azurerm_subnet.application_gateway_subnet.id
+}
+
+output "application_gateway_id" {
+  value = module.application_gateway.application_gateway.id
+}
+
+output "application_gateway_name" {
+  value = module.application_gateway.application_gateway.name
+}
+
+output "application_gateway_public_ip" {
+  value = module.application_gateway.pip.ip_address
+}
+
 
 # Log analytics workspace
 output "log_analytics_workspace_id" {

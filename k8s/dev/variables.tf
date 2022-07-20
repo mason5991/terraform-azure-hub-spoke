@@ -26,13 +26,28 @@ variable "agent_count" {
   type = number
 }
 
+variable "main_hub" {
+  type = object({
+    vnet = object({
+      name = string
+    })
+    resource_group = object({
+      name = string
+    })
+  })
+}
+
+variable "main_acr_name" {
+
+}
+
+variable "main_acr_resource_group_name" {
+
+}
+
 variable "tags" {
   default = {}
 }
-/* 
-variable "registry_uai_name" {}
-
-variable "registry_uai_resource_group_name" {} */
 
 locals {
   tags = merge({

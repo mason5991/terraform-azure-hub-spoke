@@ -6,6 +6,6 @@ output "pip" {
   value = azurerm_public_ip.pip
 }
 
-output "vpn_gateway" {
-  value = azurerm_virtual_network_gateway.vpn_gateway
+output "application_gateway" {
+  value = azurerm_application_gateway.application_gateway
 }

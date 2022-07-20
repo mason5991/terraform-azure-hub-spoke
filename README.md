@@ -39,9 +39,10 @@ Vnet - 10.255.0.0/16
 - Bastion - 10.255.255.0/24
 - Firewall - 10.255.0.0/20
 - Vpn gateway - 10.255.250.0/24
+- Application gateway - 10.245.0.0/16
 - Mgmt - 10.255.254.0/24
 
-#### Monitoring spoke
+### Monitoring spoke
 
 Vnet - 10.250.0.0/17
 
@@ -49,3 +50,9 @@ Vnet - 10.250.0.0/17
 
 - Monitoring internal - 10.250.0.0/22
 - Monitoring external - 10.250.64.0/22
+
+### dev k8s
+
+Vnet - 10.245.0.0/16
+
+- dev-k8s - 10.245.0.0/18

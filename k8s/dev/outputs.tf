@@ -1,3 +1,15 @@
+output "resource_group_name" {
+  value = azurerm_resource_group.k8s_rg.name
+}
+
+output "resource_group_location" {
+  value = azurerm_resource_group.k8s_rg.location
+}
+
+output "subnet_name" {
+  value = azurerm_subnet.k8s_subnet.name
+}
+
 output "cluster_name" {
   value = module.dev_k8s.k8s.name
 }

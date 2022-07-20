@@ -93,6 +93,25 @@ variable "vpn_gateway_pip_monitoring" {
   default = false
 }
 
+# Application gateway
+variable "application_gateway_subnet_create" {
+  type = bool
+  default = false
+}
+
+variable "application_gateway_subnet_address_prefixes" {
+  type = list(string)
+}
+
+variable "application_gateway_monitoring" {
+  type = bool
+  default = false
+}
+
+variable "application_gateway_pip_monitoring" {
+  type = bool
+  default = false
+}
 
 # Storage account
 variable "storage_account_subnet_create" {
