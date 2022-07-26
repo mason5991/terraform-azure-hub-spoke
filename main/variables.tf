@@ -209,3 +209,16 @@ variable "tags" {
 locals {
   location = var.location
 }
+
+# Util spoke
+variable "util_spoke_name" {
+  
+}
+
+variable "util_spoke_vnet_address_space" {
+  type = list(string)
+}
+
+variable "ansible_subnet_address_prefixes" {
+  type = list(string)
+}

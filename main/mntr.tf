@@ -51,10 +51,6 @@ module "storage_account" {
   subnet_create = var.storage_account_subnet_create
   subnet = azurerm_subnet.storage_account_subnet
   subnet_address_prefixes = var.storage_account_subnet_address_prefixes
-  /* network_rules = [{
-    default_action             = "Allow"
-    virtual_network_subnet_ids = [azurerm_subnet.mntr_internal_subnet.id, azurerm_subnet.mntr_external_subnet.id]
-  }] */
 
   storage_share = var.storage_share
 

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: nginx
+  labels:
+    name: nginx
+    ref: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: nginx
+      ref: nginx
+  template:
+    metadata:
+      labels:
+        name: nginx
+        ref: nginx
+    spec:
+      containers:
+        - image: __DOCKER_IMAGE__
+          imagePullPolicy: Always
+          name: nginx
+          ports:
+            - containerPort: 80

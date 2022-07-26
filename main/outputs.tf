@@ -200,3 +200,48 @@ output "mntr_external_vm_tls_private_key" {
   value = module.mntr_external_vm.vm_ssh.private_key_pem
   sensitive = true
 }
+
+
+################################################
+##                  Util spoke                ##
+################################################
+
+output "util_spoke_rg_location" {
+  value = azurerm_resource_group.util_spoke_rg.location
+}
+
+output "util_spoke_rg_id" {
+  value = azurerm_resource_group.util_spoke_rg.id
+}
+
+output "util_spoke_rg_name" {
+  value = azurerm_resource_group.util_spoke_rg.name
+}
+
+output "util_spoke_vnet_id" {
+  value = azurerm_virtual_network.util_spoke_vnet.id
+}
+
+output "util_spoke_vnet_name" {
+  value = azurerm_virtual_network.util_spoke_vnet.name
+}
+
+output "util_subnet_id" {
+  value = azurerm_subnet.mntr_external_subnet.id
+}
+
+# Ansible server
+
+output "ansible_vm_name" {
+  value = module.ansible_vm.vm.name
+}
+
+output "ansible_vm_tls_public_key" {
+  value = module.ansible_vm.vm_ssh.public_key_pem
+  sensitive = true
+}
+
+output "ansible_vm_tls_private_key" {
+  value = module.ansible_vm.vm_ssh.private_key_pem
+  sensitive = true
+}

@@ -189,6 +189,6 @@ module "hub_mgmt_vm" {
   vm_disk_size_gb = 128
 
   tags = merge({ 
-    Category = "infra-mgmt"
+    Category = "main-mgmt"
   }, local.hub_tags)
 }
