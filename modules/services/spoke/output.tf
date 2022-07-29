@@ -51,7 +51,7 @@ output "spoke_workload_vm_tls_public_key" {
   sensitive = true
 }
 
-output "hub_workload_vm_tls_private_key" {
+output "spoke_workload_vm_tls_private_key" {
   value = tls_private_key.spoke_workload_vm_ssh.private_key_pem
   sensitive = true
 }

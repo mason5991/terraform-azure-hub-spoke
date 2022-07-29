@@ -1,0 +1,20 @@
+---
+- hosts: ansible-server
+  become: true
+
+  tasks:
+    - name: login docker
+      command: docker login --username {{ docker_username }} --password {{ docker_password }} {{ docker_path }}
+
+    - name: create docker api image for develop branch using transfered file over SSH
+      command: docker pull nginx:latest
+
+    - name: create tag to image
+      command: docker tag nginx:latest {{ docker_path }}/nginx:dev
+
+    - name: push image on to docker registry
+      command: docker push {{ docker_path }}/nginx:dev
+
+    - name: remove docker images form ansible server
+      command: docker rmi nginx:latest {{ docker_path }}/nginx:dev
+      ignore_errors: yes

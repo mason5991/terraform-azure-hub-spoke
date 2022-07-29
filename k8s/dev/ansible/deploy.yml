@@ -1,0 +1,33 @@
+---
+- name: Deploy to k8s
+  hosts: ansible-server
+  user: ansible
+  become: true
+
+  tasks:
+    - name: Apply service
+      kubernetes.core.k8s:
+        kubeconfig: '~/test-project/azureconfig'
+        context: dev
+        namespace: { { namespace } }
+        state: present
+        src: ~/test-project/service.yaml
+        apply: yes
+
+    - name: Apply ingress
+      kubernetes.core.k8s:
+        kubeconfig: '~/test-project/azureconfig'
+        context: dev
+        namespace: { { namespace } }
+        state: present
+        src: ~/test-project/ingress.yaml
+        apply: yes
+
+    - name: Apply deployment
+      kubernetes.core.k8s:
+        kubeconfig: '~/test-project/azureconfig'
+        context: dev
+        namespace: { { namespace } }
+        state: present
+        src: ~/test-project/deployment.yaml
+        apply: yes
